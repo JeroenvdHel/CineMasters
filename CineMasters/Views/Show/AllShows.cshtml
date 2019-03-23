@@ -1,0 +1,52 @@
+﻿@model IEnumerable<CineMasters.Models.Domain.Show>
+
+@{
+    ViewData["Title"] = "AllShows";
+}
+
+<h1>AllShows</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MovieId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MovieId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Movie.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Movie.Content)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditShow", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "DeleteShow", new { id = item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

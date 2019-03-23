@@ -35,9 +35,14 @@ namespace CineMasters
             Configuration.Bind(config);
 
             var mongoDataContext = new MongoDataContext(config.MongoDB);
-            var movieRepo = new MovieRepository(mongoDataContext);
+            
+            services.AddSingleton<IMovieRepository>(
+                new MovieRepository(mongoDataContext)
+            );
 
-            services.AddSingleton<IMovieRepository>(movieRepo);
+            services.AddSingleton<IShowRepository>(
+                new ShowRepository(mongoDataContext)
+            );
 
             services.AddSwaggerGen(c =>
             {

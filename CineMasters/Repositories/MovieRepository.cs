@@ -27,11 +27,11 @@ namespace CineMasters.Repositories
                 .ToListAsync();
         }
 
-        public Task<Movie> GetMovie(long id)
+        public async Task<Movie> GetMovie(long id)
         {
             FilterDefinition<Movie> filter =
                 Builders<Movie>.Filter.Eq(m => m.Id, id);
-            return _context
+            return await _context
                 .Movies
                 .Find(filter)
                 .FirstOrDefaultAsync();
@@ -68,11 +68,19 @@ namespace CineMasters.Repositories
                 && deleteResult.DeletedCount > 0;
         }
 
+        /// <summary>
+        /// Method to get the highest "id" in the movie collection
+        /// and to return this long "id" + 1
+        /// </summary>
+        /// <returns>long</returns>
         public async Task<long> GetNextId()
         {
-            return await _context
-                .Movies
-                .CountDocumentsAsync(new BsonDocument()) + 1;
+            var list = _context.Movies
+                .AsQueryable<Movie>()
+                .OrderByDescending(m => m.Id);
+
+            return await Task.FromResult(list.FirstOrDefault().Id + 1);
+
         }
     }
 }

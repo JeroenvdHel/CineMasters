@@ -19,5 +19,8 @@ namespace CineMasters.Config
 
         public IMongoCollection<Movie> Movies =>
             _mongoDb.GetCollection<Movie>("movies");
+
+        public IMongoCollection<Show> Shows =>
+            _mongoDb.GetCollection<Show>("shows");
     }
 }

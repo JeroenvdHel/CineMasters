@@ -10,5 +10,6 @@ namespace CineMasters.Config
     public interface IMongoDataContext
     {
         IMongoCollection<Movie> Movies { get; }
+        IMongoCollection<Show> Shows { get; }
     }
 }

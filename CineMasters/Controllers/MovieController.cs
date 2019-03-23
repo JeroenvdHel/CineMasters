@@ -50,17 +50,26 @@ namespace CineMasters.Controllers
         //POST movie
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async void CreateMovie([FromForm] Movie movie)
+        public async Task<IActionResult> CreateMovie([FromForm] Movie movie)
         {
             movie.Id = await _repo.GetNextId();
             await _repo.Create(movie);
-            RedirectToAction("Index");
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult EditMovie(long id)
+        {
+            Movie movie = _repo.GetMovie(id).Result;
+            return View("EditMovie", movie);
         }
 
         //PUT movie/1
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Movie>> Put(long id, [FromForm] Movie movie)
+        [HttpPost]
+        public async Task<ActionResult<Movie>> PutMovie([FromForm] Movie movie)
         {
+            long id = movie.Id;
+
             var movieFromDb = await _repo.GetMovie(id);
 
             if (movieFromDb == null)
@@ -71,12 +80,12 @@ namespace CineMasters.Controllers
 
             await _repo.Update(movie);
 
-            return new OkObjectResult(movie);
+            return RedirectToAction("Index"); 
         }
 
         //DELETE movie/1
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
+        [HttpGet]
+        public async Task<IActionResult> DeleteMovie( long id)
         {
             var post = await _repo.GetMovie(id);
 
@@ -85,7 +94,8 @@ namespace CineMasters.Controllers
 
             await _repo.Delete(id);
 
-            return new OkResult();
+            return RedirectToAction("Index");
+            //return new OkResult();
         }
     }
 }
