@@ -13,6 +13,8 @@ namespace CineMasters.Repositories
         
         // api/1/[GET]
         Task<Show> GetShow(long id);
+
+        Task<IEnumerable<Show>> GetShowsForMovie(long id);
         
         // api/[POST]
         Task CreateShow(Show show);

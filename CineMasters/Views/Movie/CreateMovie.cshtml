@@ -1,7 +1,7 @@
 ﻿@model CineMasters.Models.Domain.Movie
 
 @{
-    ViewData["Title"] = "CreateMovie";
+    ViewData["Title"] = "Nieuwe film";
 }
 
 <h1>CreateMovie</h1>
@@ -70,12 +70,6 @@
                 </div>
             </div>
             <a href="#" id="actorLink">Voeg nog een acteur toe</a>
-            @*Actors
-                <label class="control-label" for="Actors">Actors</label>
-                <input class="form-control" type="text" id="Actors" name="Actors" value="System.String[]">
-                <span class="text-danger field-validation-valid" data-valmsg-for="Actors" data-valmsg-replace="true"></span>
-
-        Genres arrays*@
             <div class="form-group">
                 <label asp-for="Genre" class="control-label"></label>
                 <select asp-for="Genre" asp-items="Html.GetEnumSelectList<Genre>()">
@@ -99,18 +93,19 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}}
 <script>
     $(document).ready(function () {
         var $fields = $('#actorFields');
         $('#actorLink').click(function (e) {
             e.preventDefault();
-            $('div class="form-group">').appendTo($fields);
+            $('<div class="form-group">').appendTo($fields);
             $('<label class="control-label" for="Actors">Actors</label>').appendTo($fields);
             $('<input class="form-control" type="text" id="Actors" name="Actors" value="">').appendTo($fields);
             $('<span class="text-danger field-validation-valid" data-valmsg-for="Actors" data-valmsg-replace="true"></span>').appendTo($fields);
             $('</div>').appendTo($fields);
+            console.log("Gelukt!");
         });
     });
 </script>
-}
+

@@ -36,13 +36,9 @@ namespace CineMasters
 
             var mongoDataContext = new MongoDataContext(config.MongoDB);
             
-            services.AddSingleton<IMovieRepository>(
-                new MovieRepository(mongoDataContext)
-            );
-
-            services.AddSingleton<IShowRepository>(
-                new ShowRepository(mongoDataContext)
-            );
+            services.AddSingleton<IMovieRepository>(new MovieRepository(mongoDataContext));
+            services.AddSingleton<IShowRepository>(new ShowRepository(mongoDataContext));
+            services.AddSingleton<IRoomRepository>(new RoomRepository(mongoDataContext));
 
             services.AddSwaggerGen(c =>
             {
@@ -84,7 +80,7 @@ namespace CineMasters
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Show}/{action=Index}/{id?}");
             });
         }
     }

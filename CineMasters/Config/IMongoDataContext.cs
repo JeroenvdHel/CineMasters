@@ -11,6 +11,6 @@ namespace CineMasters.Config
     {
         IMongoCollection<Movie> Movies { get; }
         IMongoCollection<Show> Shows { get; }
-        IMongoCollection<Person> Persons { get; }
+        IMongoCollection<Room> Rooms { get; }
     }
 }

@@ -23,7 +23,7 @@ namespace CineMasters.Config
         public IMongoCollection<Show> Shows =>
             _mongoDb.GetCollection<Show>("shows");
 
-        public IMongoCollection<Person> Persons =>
-            _mongoDb.GetCollection<Person>("persons");
+        public IMongoCollection<Room> Rooms =>
+            _mongoDb.GetCollection<Room>("rooms");
     }
 }

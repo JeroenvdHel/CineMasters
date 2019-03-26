@@ -1,7 +1,7 @@
 ﻿@model Movie
 
 @{
-    ViewData["Title"] = "EditMovie";
+    ViewData["Title"] = "Wijzig film";
 }
 
 <h1>EditMovie</h1>
@@ -12,11 +12,78 @@
     <div class="col-md-4">
         <form asp-action="PutMovie" asp-controller="Movie" method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" value="@Model.Id" a />
+            <input type="hidden" asp-for="Id"/>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReleaseDate" class="control-label"></label>
+                <input asp-for="ReleaseDate" class="form-control" />
+                <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CountryOfOrigin" class="control-label"></label>
+                <input asp-for="CountryOfOrigin" class="form-control" />
+                <span asp-validation-for="CountryOfOrigin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Language" class="control-label"></label>
+                <select asp-for="Language" asp-items="Html.GetEnumSelectList<Language>()">
+                    <option selected="selected" value="">Selecteer een taal</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Subtitle" class="control-label"></label>
+                <select asp-for="Subtitle" asp-items="Html.GetEnumSelectList<Language>()">
+                    <option selected="selected" value="">Selecteer een taal</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Length" class="control-label"></label>
+                <input asp-for="Length" class="form-control" />
+                <span asp-validation-for="Length" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Classification" class="control-label"></label>
+                <select asp-for="Classification" asp-items="Html.GetEnumSelectList<Classification>()">
+                    <option selected="selected" value="">Selecteer de classificatie(s)</option>
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <input asp-for="Rating" class="form-control" />
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Director" class="control-label"></label>
+                <input asp-for="Director" class="form-control" />
+                <span asp-validation-for="Director" class="text-danger"></span>
+            </div>
+            <div id="actorFields">
+                @{
+                    int i = 0;
+                    foreach (var actor in Model.Actors)
+                    {
+                        <div class="form-group">
+                            <label asp-for="Actors" class="control-label">Acteur @i</label>
+                            <input asp-for="Actors" class="form-control" value="@actor" />
+                            <span asp-validation-for="Actors" class="text-danger"></span>
+                        </div>
+                        i++;
+                    }
+                }
+                
+            </div>
+            <a href="#" id="actorLink">Voeg nog een acteur toe</a>
+            <div class="form-group">
+                <label asp-for="Genre" class="control-label"></label>
+                <select asp-for="Genre" asp-items="Html.GetEnumSelectList<Genre>()">
+                    <option selected="selected" value="">Selecteer de genre(s)</option>
+                </select>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
@@ -37,3 +104,17 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+<script>
+    $(document).ready(function () {
+        var $fields = $('#actorFields');
+        $('#actorLink').click(function (e) {
+            e.preventDefault();
+            $('<div class="form-group">').appendTo($fields);
+            $('<label class="control-label" for="Actors">Actors</label>').appendTo($fields);
+            $('<input class="form-control" type="text" id="Actors" name="Actors" value="">').appendTo($fields);
+            $('<span class="text-danger field-validation-valid" data-valmsg-for="Actors" data-valmsg-replace="true"></span>').appendTo($fields);
+            $('</div>').appendTo($fields);
+            console.log("Gelukt!");
+        });
+    });
+</script>

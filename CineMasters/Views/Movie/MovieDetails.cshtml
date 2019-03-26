@@ -1,0 +1,45 @@
+﻿@model MovieViewModel
+
+@{
+    ViewData["Title"] = "MovieDetails";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <img src="~/img/movie_pics/@(Model.Movie.InternalId)_big.jpg" style="width:100%; height: auto;" />
+        </div>
+        <div class="col-8">
+            <div class="container">
+                <div class="row">
+                    <h1 class="card-title col-auto">@Model.Movie.Title</h1>
+                </div>
+                <div class="row">
+                    <div class="border-bottom border-danger">
+                        <p>@Model.Movie.Description</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <h3 class="col-12 pt-2">Koop ticket</h3>
+                </div>
+                @foreach (var day in @Model.ShowDays)
+                {
+                    <div class="row p-1">
+                        <div class="col-auto p-1"><p class="btn btn-primary">@day.Date.ToString("yyyy-MM-dd")</p></div>
+                        @foreach (var show in day.ShowTimes)
+                        {
+                            <div class="col-auto p-1">
+                                <a class="btn btn-danger" href="@Url.Action("Index", "Checkout", new { showId = show.Value })">
+                                    @show.Key.ToString("HH:mm")
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+            <a class="float-right col-auto pt-3" asp-controller="Show" asp-action="Index">Terug naar overzicht</a>
+        </div>
+    </div>
+</div>
+

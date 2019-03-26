@@ -24,18 +24,29 @@ namespace CineMasters.Repositories
             var query = from show in _context.Shows.AsQueryable()
                         join movie in _context.Movies.AsQueryable()
                             on show.MovieId equals movie.Id
-                        into fullShow
+                        join room in _context.Rooms.AsQueryable()
+                            on show.RoomId equals room.Id
                         select new Show
                         {
                             InternalId = show.InternalId,
                             Id = show.Id,
                             DateTime = show.DateTime,
                             MovieId = show.MovieId,
-                            Movie = fullShow.First()
+                            Movie = movie,
+                            RoomId = show.RoomId,
+                            Room = room,
+                            OccupiedSeats = show.OccupiedSeats,
+                            ThreeDimensional = show.ThreeDimensional
                         };
 
             return await Task.FromResult(query.ToList());
+        }
 
+        public async Task<IEnumerable<Show>> GetShowsForMovie(long id)
+        {
+            long movieId = id;
+            FilterDefinition<Show> filter = Builders<Show>.Filter.Eq(s => s.MovieId, movieId);
+            return await _context.Shows.Find(filter).ToListAsync();
         }
 
         public async Task<Show> GetShow(long id)

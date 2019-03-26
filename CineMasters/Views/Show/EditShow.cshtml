@@ -1,0 +1,51 @@
+﻿@model Show
+
+@{
+    ViewData["Title"] = "Wijzig Voorstelling";
+}
+
+<h1>CreateShow</h1>
+
+<h4>Show</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="PutShow" asp-controller="Show" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div class="form-group">
+                <label asp-for="Movie.Title" class="control-label">Film:</label>
+                <select asp-for="MovieId" class="form-control"
+                        asp-items="@(ViewBag.ListOfMovies)"></select>
+                <span asp-validation-for="MovieId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateTime" class="control-label">Datum en Tijd:</label>
+                <input asp-for="DateTime" class="form-control" />
+                <span asp-validation-for="DateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RoomId" class="control-label">Zaal:</label>
+                <select asp-for="RoomId" class="form-control"
+                        asp-items="@(ViewBag.ListOfRooms)"></select>
+                <span asp-validation-for="RoomId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ThreeDimensional" class="control-label">3D:</label>
+                <input asp-for="ThreeDimensional" class="form-control" />
+                <span asp-validation-for="ThreeDimensional" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

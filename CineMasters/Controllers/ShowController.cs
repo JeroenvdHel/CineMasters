@@ -2,37 +2,54 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Cinemasters.Models.Helpers;
 using CineMasters.Models.Domain;
+using CineMasters.Models.ViewModels;
 using CineMasters.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CineMasters.Controllers
 {
     public class ShowController : Controller
     {
-        private readonly IShowRepository _repo;
+        private readonly IShowRepository _showRepo;
+        private readonly IMovieRepository _movieRepo;
+        private readonly IRoomRepository _roomRepo;
+        public int PageSize = 5;
+        public string SortedBy { get; set; } = "date";
 
-        public ShowController(IShowRepository repo)
+        public ShowController(IShowRepository showRepo, IMovieRepository movieRepo, IRoomRepository roomRepo)
         {
-            _repo = repo;
+            _showRepo = showRepo;
+            _movieRepo = movieRepo;
+            _roomRepo = roomRepo;
         }
 
         //Get all shows
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int showPage = 1, string sortedBy = "default", string filter = "none")
         {
-            var result = await _repo.GetAllShows();
+            if (SortedBy != sortedBy && sortedBy != "default")
+            {
+                SortedBy = sortedBy;
+            }
+            ViewBag.sortedBy = SortedBy;
 
-            //return new ObjectResult(result);
-            return View("AllShows", await _repo.GetAllShows());
+            var shows = await _showRepo.GetAllShows();
+            var showList = SortShows(CreateShowListViewModel(shows, showPage, sortedBy), sortedBy);
+            showList.Shows = showList.Shows.Skip((showPage - 1) * PageSize).Take(PageSize);
+
+
+            return View("AllShows", showList);
         }
 
         //Get single show
         [HttpGet("{id}")]
         public async Task<ActionResult<Show>> Get(long id)
         {
-            var show = await _repo.GetShow(id);
+            var show = await _showRepo.GetShow(id);
 
             if (show == null)
             {
@@ -45,6 +62,8 @@ namespace CineMasters.Controllers
         [HttpGet]
         public IActionResult CreateShow()
         {
+            CreateSelectListForMovieAndRoom();
+
             Show show = new Show();
             return View("CreateShow", show);
         }
@@ -54,15 +73,17 @@ namespace CineMasters.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateShow([FromForm] Show show)
         {
-            show.Id = await _repo.GetNextId();
-            await _repo.CreateShow(show);
+            show.Id = await _showRepo.GetNextId();
+            await _showRepo.CreateShow(show);
             return RedirectToAction("Index");
         }
 
         [HttpGet]
         public IActionResult EditShow(long id)
         {
-            Show show = _repo.GetShow(id).Result;
+            CreateSelectListForMovieAndRoom();
+
+            Show show = _showRepo.GetShow(id).Result;
             return View("EditShow", show);
         }
 
@@ -72,7 +93,7 @@ namespace CineMasters.Controllers
         {
             long id = show.Id;
 
-            var showFromDb = await _repo.GetShow(id);
+            var showFromDb = await _showRepo.GetShow(id);
 
             if (showFromDb == null)
                 return new NotFoundResult();
@@ -80,24 +101,89 @@ namespace CineMasters.Controllers
             show.Id = showFromDb.Id;
             show.InternalId = showFromDb.InternalId;
 
-            await _repo.UpdateShow(show);
+            bool success = await _showRepo.UpdateShow(show);
+
+            if (!success)
+                return new ObjectResult("Niet gelukt om de show te updaten!");
 
             return RedirectToAction("Index"); 
+
+
         }
 
         //Delete sected show from database
         [HttpGet]
-        public async Task<IActionResult> DeleteShow( long id)
+        public async Task<IActionResult> DeleteShow(long id)
         {
-            var post = await _repo.GetShow(id);
+            var post = await _showRepo.GetShow(id);
 
             if (post == null)
                 return new NotFoundResult();
 
-            await _repo.DeleteShow(id);
+            await _showRepo.DeleteShow(id);
 
             return RedirectToAction("Index");
-            //return new OkResult();
+        }
+
+
+
+        /// <summary>
+        /// Create 2 lists to populate select tags with lists of rooms and movies and 
+        /// store them in a ViewBag.
+        /// </summary>
+        private void CreateSelectListForMovieAndRoom() {
+            var movieList = _movieRepo.GetAllMovies().Result;
+            SelectList movieSelect = new SelectList(
+                    movieList.Select(x => new { Value = x.Id, Text = x.Title }),
+                    "Value",
+                    "Text"
+                );
+            ViewBag.ListOfMovies = movieSelect;
+
+            var roomList = _roomRepo.GetAllRooms().Result;
+            SelectList roomsSelect = new SelectList(
+                    roomList.Select(x => new { Value = x.Id, Text = x.Name }),
+                    "Value",
+                    "Text"
+                );
+            ViewBag.ListOfRooms = roomsSelect;
+        }
+
+        private ShowListViewModel CreateShowListViewModel(IEnumerable<Show> shows, int showPage, string sortedBy)
+        {
+            PagingInfo pagingInfo = new PagingInfo
+            {
+                CurrentPage = showPage,
+                ItemsPerPage = PageSize,
+                TotalItems = shows.Count(),
+                SortedBy = sortedBy
+            };
+            ShowListViewModel list = new ShowListViewModel
+            {
+                Shows = shows,
+                PagingInfo = pagingInfo
+            };
+
+            return list;
+        }
+
+        private ShowListViewModel SortShows(ShowListViewModel showList, string sortedBy)
+        {
+            switch (sortedBy)
+            {
+                case "movie":
+                    showList.Shows = showList.Shows.OrderBy(s => s.Movie.Id);
+                    break;
+                case "room":
+                    showList.Shows = showList.Shows.OrderBy(s => s.Room.Id);
+                    break;
+                case "date":
+                    showList.Shows = showList.Shows.OrderBy(o => o.DateTime);
+                    break;
+                default:
+                    break;
+            }
+            return showList;
         }
     }
 }
