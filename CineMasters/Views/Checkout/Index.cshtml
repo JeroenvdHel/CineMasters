@@ -1,0 +1,118 @@
+﻿@model Checkout
+
+@{
+    ViewData["Title"] = "Tickets";
+}
+
+<div class="container">
+
+    <!-- use tag-helper for form-control -->
+    <form asp-action="SelectSeats" asp-controller="Seat" method="POST">
+        <input type="hidden" asp-for="@Model.ShowId" value="@Model.ShowId" />
+
+        <div class="row mt-5 mb-2 align-items-center">
+            <h4>Selecteer je gewenst aantal tickets en korting.</h4>
+        </div>
+
+        <div class="row mt-5 mb-2 align-items-center">
+            <div class="col-md-6 col-12">
+                <p>
+                    Standaardtarief<br>
+                    <a class="text-muted"><small>Films langer dan 120 minuten kosten €9,00 in plaats van €8,50.</small></a>
+                </p>
+            </div>
+            <div class="col-md-1 col-4">
+                <select asp-for="@Model.StandardRate" class="custom-select">
+                    <option selected value="0">-</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div class="col-md-6 col-12">
+                <p>
+                    Ik ben een kind<br>
+                    <a class="text-muted"><small>Tot en met de leeftijd van 11 jaar oud.</small></a>
+                </p>
+            </div>
+            <div class="col-md-1 col-4">
+                <select asp-for="@Model.ChildRate." class="custom-select">
+                    <option selected value="0">-</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div class="col-md-6 col-12">
+                <p>
+                    Ik ben een student<br>
+                    <a class="text-muted"><small>Maandag tot en met donderdag, met geldige studentenkaart.</small></a>
+                </p>
+            </div>
+            <div class="col-md-1 col-4">
+                <select asp-for="@Model.StudentRate" class="custom-select">
+                    <option selected value="0">-</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div class="col-md-6 col-12">
+                <p>
+                    Ik ben een 65-plusser<br>
+                    <a class="text-muted"><small>Maandag tot en met donderdag, met geldige seniorenkaart.</small></a>
+                </p>
+
+            </div>
+            <div class="col-md-1 col-4">
+                <select asp-for="@Model.SeniorRate" class="custom-select">
+                    <option selected value="0">-</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div class="col-md-6 col-12">
+                <p>
+                    VIP Arrangement<br>
+                    <a class="text-muted"><small>Voor als je als een filmkoning behandeld wil worden!</small></a>
+                </p>
+            </div>
+            <div class="col-md-1 col-4">
+                <select asp-for="@Model.VipRate" class="custom-select">
+                    <option selected value="0">-</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div class="col-md-6 col-12">
+                <p>
+                    Nationale bioscoopbon t.w.v.<br>
+                    <a class="text-muted"><small>Nationale bioscoopbon</small></a>
+                </p>
+            </div>
+            <div class="col-md-1 col-4">
+                <input asp-for="CouponDiscount" class="form-control" />
+                <span asp-validation-for="CouponDiscount" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row mt-3 mb-2">
+            <div class="col-md-12">
+                <input type="submit" class="btn btn-primary" value="Bevestig order">
+            </div>
+        </div>
+
+    </form>
+</div>

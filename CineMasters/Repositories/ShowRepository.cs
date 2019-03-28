@@ -51,12 +51,26 @@ namespace CineMasters.Repositories
 
         public async Task<Show> GetShow(long id)
         {
-            FilterDefinition<Show> filter =
-                Builders<Show>.Filter.Eq(m => m.Id, id);
-            return await _context
-                .Shows
-                .Find(filter)
-                .FirstOrDefaultAsync();
+            var query = from show in _context.Shows.AsQueryable()
+                        join movie in _context.Movies.AsQueryable()
+                            on show.MovieId equals movie.Id
+                        join room in _context.Rooms.AsQueryable()
+                            on show.RoomId equals room.Id
+                        where show.Id == id
+                        select new Show
+                        {
+                            InternalId = show.InternalId,
+                            Id = show.Id,
+                            DateTime = show.DateTime,
+                            MovieId = show.MovieId,
+                            Movie = movie,
+                            RoomId = show.RoomId,
+                            Room = room,
+                            OccupiedSeats = show.OccupiedSeats,
+                            ThreeDimensional = show.ThreeDimensional
+                        };
+
+            return await Task.FromResult(query.First());
         }
 
         public async Task CreateShow(Show show)

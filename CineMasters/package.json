@@ -1,0 +1,32 @@
+{
+  "name": "cinemasters",
+  "version": "1.0.0",
+  "description": "SchoolProject",
+  "main": "index.js",
+  "scripts": {
+    "gulp": "gulp",
+    "start": "npm install && gulp && gulp watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeroen van der Hel",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.3.3",
+    "@babel/preset-env": "^7.3.1",
+    "autoprefixer": "^9.4.8",
+    "browser-sync": "^2.26.3",
+    "cssnano": "^4.1.10",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^8.0.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-imagemin": "^5.0.3",
+    "gulp-newer": "^1.4.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-rename": "^1.4.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "node-sass": "^4.11.0"
+  }
+}

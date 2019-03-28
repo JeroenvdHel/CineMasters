@@ -1,4 +1,6 @@
-﻿using Nager.Date;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using Nager.Date;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,37 +10,47 @@ namespace CineMasters.Models.Domain
 {
     public class Ticket
     {
+        [BsonId]
+        public ObjectId InternalId { get; set; }
+        public long Id { get; set; }
         public Show Show { get; set; }
-        public bool IsChild { get; set; }
-        public bool IsStudent { get; set; }
-        public bool IsSenior { get; set; }
-        public bool IsVip { get; set; }
-        public decimal Price { get; set; }
-        public decimal CouponDiscount { get; set; }
+        public bool IsChild { get; set; } = false;
+        public bool IsStudent { get; set; } = false;
+        public bool IsSenior { get; set; } = false;
+        public bool IsVip { get; set; } = false;
+        public decimal TicketPrice { get; set; }
+        public int TicketCode { get; set; }
+        public string PaymentId { get; set; }
 
-        public decimal CalculatePrice()
+        public Ticket(Show show)
+        {
+            Show = show;
+        }
+
+
+        public decimal CalculatePrice(decimal showPrice)
         {
             int currentYear = DateTime.Now.Year;
             var publicHolidays = DateSystem.GetPublicHoliday(new DateTime(currentYear), new DateTime(currentYear+2), "NL");
-            decimal price = 8.50M;
-            
+                        
             //Check if movie length is longer then 120 minutes. If so, up price by 50 cent
             if (Show.Movie.Length > 120)
             {
-                price = 9M;
+                showPrice += 0.5M;
             }
 
             //Check if show is in 3D. If so, ad 2.50 to price
             if (Show.ThreeDimensional)
             {
-                price += 2.5M;
+                showPrice += 2.5M;
             }
 
+            //Check if ticket is for child. If so, if show is before 18:00 and language is Dutch, subtract 1.5 from price.
             if (IsChild)
             {
                 if (!IsAfterSix(Show.DateTime) && (Show.Movie.Language == Language.Nederlands))
                 {
-                    price -= 1.5M;
+                    showPrice -= 1.5M;
                 }
             }
 
@@ -46,7 +58,7 @@ namespace CineMasters.Models.Domain
             {
                 if (!IsVrZaZo(Show.DateTime))
                 {
-                    price -= 1.5M;
+                    showPrice -= 1.5M;
                 }
             }
 
@@ -56,21 +68,16 @@ namespace CineMasters.Models.Domain
                 {
                     if (!IsVrZaZo(Show.DateTime))
                     {
-                        price -= 1.5M;
+                        showPrice -= 1.5M;
                     }
                 }     
             }
 
             if (IsVip)
             {
-
+                showPrice += 4.0M;
             }
-            return price;
-        }
-
-        public void ExtractCouponFromPrice(decimal discount) {
-            CouponDiscount = discount;
-            Price -= discount;
+            return showPrice;
         }
 
         private bool IsInHoliday(DateTime showDate) {

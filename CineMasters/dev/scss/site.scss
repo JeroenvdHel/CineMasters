@@ -1,0 +1,129 @@
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
+}
+
+
+.checkbox {
+    position: relative;
+    margin-top: 12.5px;
+    margin: 4px;
+    width: 20px;
+
+    input[type="checkbox"] {
+        box-sizing: border-box;
+        padding: 0;
+        transform: translate3d(10px,4px,0);
+        position: absolute;
+        z-index: -5;
+        height: 2px;
+        margin-left: 0;
+        width: 2px;
+    }
+
+    label:before,
+    label:after {
+        position: absolute;
+        left: 0;
+        top: 12.5px;
+        right: 0;
+        width: 25px;
+        height: 25px;
+        display: inline-block;
+        text-align: center;
+        margin-top: -12.5px;
+    }
+
+    label:after {
+        background: #fff;
+        border: 1px solid #333;
+        content: '';
+        -webkit-border-radius: 1px;
+        -moz-border-radius: 1px;
+        border-radius: 1px;
+    }
+
+    input + label:before {
+        content: '';
+        border-color: black;
+        z-index: 234;
+        border: 1px solid;
+    }
+}
+
+.checkbox input[data-status="occupied"] + label:before {
+    background-color: red;
+}
+.checkbox input[data-status="reserved"] + label:before {
+    background-color: orange;
+}
+
+.checkbox input[data-status="free"] + label:before {
+    background-color: green;
+}
+
+.checkbox input[data-status="selected"] + label:before {
+    background-color: yellow;
+}
+
+.movie-screen {
+    height: 20px;
+    border: 1px solid black;
+    background-color: black;
+    margin-bottom: 50px;
+}

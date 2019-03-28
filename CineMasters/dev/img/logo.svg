@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+  <g fill="none" fill-rule="evenodd">
+    <rect width="155" height="100" x="47" y="188" fill="#000" fill-rule="nonzero"/>
+    <rect width="252" height="100" x="202" y="188" fill="#FFF" fill-rule="nonzero"/>
+    <text font-family="DINCondensed-Bold, DIN Condensed" font-size="100" font-style="condensed" font-weight="bold">
+      <tspan x="54.4" y="275" fill="#FFF">CINE</tspan> <tspan x="196.9" y="275" fill="#000">MASTER</tspan>
+    </text>
+  </g>
+</svg>

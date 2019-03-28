@@ -46,7 +46,7 @@ namespace CineMasters.Controllers
         }
 
         //Get single show
-        [HttpGet("{id}")]
+        [HttpGet]
         public async Task<ActionResult<Show>> Get(long id)
         {
             var show = await _showRepo.GetShow(id);
@@ -58,7 +58,7 @@ namespace CineMasters.Controllers
             return new ObjectResult(show);
         }
 
-        //Get show edit form
+        //Get show create form
         [HttpGet]
         public IActionResult CreateShow()
         {

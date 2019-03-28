@@ -24,7 +24,7 @@ namespace CineMasters.Models.Domain
         public long RoomId { get; set; }
         public Room Room { get; set; }
 
-        public Seat[] OccupiedSeats { get; set; }
+        public List<Seat> OccupiedSeats { get; set; }
 
         [DisplayName("3D")]
         public bool ThreeDimensional { get; set; }
