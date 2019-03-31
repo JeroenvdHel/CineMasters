@@ -18,6 +18,11 @@ using Mollie.Api.Client.Abstract;
 using CineMasters.Models.Mollie.Services;
 using AutoMapper;
 using CineMasters.Models.Mollie.Middleware;
+using Microsoft.AspNetCore.Session;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using CineMasters.Accounts;
 
 namespace CineMasters
 {
@@ -41,26 +46,33 @@ namespace CineMasters
             });
 
             services.AddDistributedMemoryCache();
-
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.IdleTimeout = TimeSpan.FromSeconds(120);
                 options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
 
             services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute())).SetCompatibilityVersion(CompatibilityVersion.Version_2_2); ;
-
-            services.AddSession(options =>
-            {
-                options.Cookie.Name = ".AdventureWorks.Session";
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
-            });
 
             var config = new ServerConfig();
             Configuration.Bind(config);
 
             var mongoDataContext = new MongoDataContext(config.MongoDB);
+            
+            services.AddDbContext<AppIdentityDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetSection("UserIdentity:ConnectionString").Value, b =>
+                b.MigrationsAssembly("CineMasters"));
+            });
+
+            services.AddIdentity<AppUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppIdentityDbContext>()
+                .AddDefaultTokenProviders();
+
+            //services.ConfigureApplicationCookie(options =>
+            //    options.LoginPath = "/User/Login");
 
             #region Mollie
             string apiKey = Configuration.GetSection("MollieApiKey").Value;
@@ -74,6 +86,7 @@ namespace CineMasters
             services.AddSingleton<IMovieRepository>(new MovieRepository(mongoDataContext));
             services.AddSingleton<IShowRepository>(new ShowRepository(mongoDataContext));
             services.AddSingleton<IRoomRepository>(new RoomRepository(mongoDataContext));
+            services.AddSingleton<ITicketRepository>(new TicketRepository(mongoDataContext));
 
             #region Mollie
             services.AddTransient<IPaymentOverviewClient, PaymentOverviewClient>();
@@ -90,6 +103,8 @@ namespace CineMasters
 
                 });
             });
+
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,8 +125,9 @@ namespace CineMasters
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseSession();
-
+            //app.UseHttpContextItemsMiddleware();
             app.UseSwagger();
+            app.UseAuthentication();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");
@@ -121,8 +137,11 @@ namespace CineMasters
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Show}/{action=Index}/{id?}");
+                    template: "{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
             });
+
+            //IdentitySeedData.EnsurePopulated(app);
         }
     }
 }

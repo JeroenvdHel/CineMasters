@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CineMasters.Config;
 using CineMasters.Models.Domain;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 
@@ -111,6 +112,10 @@ namespace CineMasters.Repositories
         /// <returns>long</returns>
         public async Task<long> GetNextId()
         {
+            if (_context.Shows.CountDocumentsAsync(new BsonDocument()).Result <= (long)0)
+            {
+                return await Task.FromResult(1);
+            }
             var list = _context.Shows
                 .AsQueryable<Show>()
                 .OrderByDescending(s => s.Id);

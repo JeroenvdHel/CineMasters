@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CineMasters.Models.Domain;
+using CineMasters.Models.Helpers;
 using CineMasters.Models.ViewModels;
 using CineMasters.Repositories;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ using Mollie.Api.Client.Abstract;
 using Mollie.Api.Models;
 using Mollie.Api.Models.Payment.Request;
 using Mollie.Api.Models.Payment.Response;
+using Newtonsoft.Json;
 
 namespace CineMasters.Controllers
 {
@@ -33,9 +35,13 @@ namespace CineMasters.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SelectSeats([FromForm] Checkout checkout)
         {
-            checkout.Show = _showRepo.GetShow(checkout.ShowId).Result;
+            Show show = _showRepo.GetShow(checkout.ShowId).Result;
+            checkout.Show = show;
             checkout.AddTicketsToList();
 
+            //Store checkout in session
+            HttpContext.Session.SetObjectAsJson("checkout", checkout);
+            
             RoomViewModel model = new RoomViewModel
             {
                 Checkout = checkout
@@ -46,78 +52,66 @@ namespace CineMasters.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult SaveSelectedSeats(RoomViewModel model)
+        public IActionResult SaveSelectedSeats(IFormCollection formCollection)
         {
-            return new ObjectResult(model);
-            //List<Seat> SelectedSeats = new List<Seat>();
-            //int counter = 1;
-            //foreach (var item in formCollection)
-            //{
-            //    if (counter < (formCollection.Count - 1))
-            //    {
-            //        char c = item.Key[0];
-            //        int i = Convert.ToInt32(item.Key.Substring(2));
-                    
-            //        if (formCollection[item.Key] == "Geselecteerd")
-            //        {
-            //            Seat s = new Seat
-            //            {
-            //                RowLetter = c,
-            //                SeatNumber = i,
-            //                Status = SeatStatus.Reserved
-            //            };
-            //            SelectedSeats.Add(s);
-            //        }
-            //    }
-            //    counter++;
-            //}
-            //var checkout = formCollection["Checkout"];
-            //Show show = _showRepo.GetShow(long.Parse(formCollection["showId"])).Result;
-            //decimal totalPrice = Decimal.Parse(formCollection["totalprice"]);
+            //Get checkout from session
+            Checkout checkout = HttpContext.Session.GetObjectFromJson<Checkout>("checkout");
 
-            //bool seatsReservedInDb = SaveSeats(SelectedSeats, show);
+            List<Seat> selectedSeats = new List<Seat>();
+            int counter = 0;
+            foreach (var item in formCollection)
+            {
+                if (counter < (formCollection.Count - 1))
+                {
+                    char c = item.Key[0];
+                    int i = Convert.ToInt32(item.Key.Substring(2));
+
+                    if (formCollection[item.Key] == "Geselecteerd")
+                    {
+                        Seat s = new Seat
+                        {
+                            RowLetter = c,
+                            SeatNumber = i,
+                            Status = SeatStatus.Reserved
+                        };
+                        selectedSeats.Add(s);
+                    }
+                    checkout.Tickets.ElementAt(counter).Seat = item.Key;
+                    checkout.Tickets.ElementAt(counter).TicketCode =
+                        Int64.Parse(checkout.CheckoutCode.ToString()+counter.ToString());
+                }
+                counter++;
+            }
+
+            checkout.SelectedSeats = selectedSeats;
+            HttpContext.Session.SetObjectAsJson("checkout", checkout);
+
+            //bool seatsReservedInDb = SaveSeats(checkout);
 
             //bool paymentResult = PaymentSucceeded(true);
 
-            //if (paymentResult)
-            //{
-            //    SelectedSeats = ChangeSeatStatus(SelectedSeats, SeatStatus.Occupied).ToList();
-            //}
-            //else
-            //{
-            //    SelectedSeats = ChangeSeatStatus(SelectedSeats, SeatStatus.Free).ToList();
-            //}
-            //bool seatsOccupiedOrFreedInDb = SaveSeats(SelectedSeats, show);
+            string paymentResponse = MakePayment(checkout).Result;
+            //Store Tickets in db
 
-            //return new ObjectResult(seatsOccupiedOrFreedInDb);
+            PaymentOverviewModel model = new PaymentOverviewModel(checkout, paymentResponse);
 
-            ////string paymentUrl = MakePayment(show, SelectedSeats).Result;
-
-            ////PaymentOverviewModel model = new PaymentOverviewModel(show, SelectedSeats, paymentUrl);
-
+            return View("PaymentOverview", model);
         }
 
-        public bool ReserveSeats(List<Seat> seats, Show show)
-        {
-            show.OccupiedSeats.AddRange(seats);
-
-            return _showRepo.UpdateShow(show).Result;
-        }
-
-        public bool SaveSeats(List<Seat> seatList, Show show)
+        public bool SaveSeats(Checkout checkout)
         {
             // Check of OccupiedSeats is an empty List<Seat>
-            if (show.OccupiedSeats == null)
+            if (checkout.Show.OccupiedSeats == null)
             {
                 // If empty, fill it with seatList parameter
-                show.OccupiedSeats = seatList;
+                checkout.Show.OccupiedSeats = checkout.SelectedSeats;
             }
             else
             {
                 // If not empty, check if there are same seats in both Lists.
-                foreach (var seat in seatList)
+                foreach (var seat in checkout.SelectedSeats)
                 {
-                    Seat seatToUpdate = show.OccupiedSeats.FirstOrDefault(s =>
+                    Seat seatToUpdate = checkout.Show.OccupiedSeats.FirstOrDefault(s =>
                         s.RowLetter == seat.RowLetter && 
                         s.SeatNumber == seat.SeatNumber
                         );
@@ -129,12 +123,12 @@ namespace CineMasters.Controllers
                     // If seats does not exists, add it to OccupiedSeats
                     else
                     {
-                        show.OccupiedSeats.Add(seat);
+                        checkout.Show.OccupiedSeats.Add(seat);
                     }
                 }
             }
             // Update database
-            return _showRepo.UpdateShow(show).Result;
+            return _showRepo.UpdateShow(checkout.Show).Result;
         }
 
         private bool PaymentSucceeded(bool b)
@@ -157,15 +151,27 @@ namespace CineMasters.Controllers
             }
             return result;
         }
-        
-        //public async Task<string> MakePayment(Show show, List<Seat> selectedSeats)
-        //{
-        //    Checkout checkout = new Checkout();
 
-        //    foreach (var seat in selectedSeats)
-        //    {
-        //        checkout.
-        //    }
-        //}
+        public async Task<string> MakePayment(Checkout checkout)
+        {
+            string totalPrice = checkout.GetTotalPrice().ToString();
+
+            IPaymentClient paymentClient = new PaymentClient("test_spzpNiFENpG6uUWDMnuJxvJwwsh2M8");
+
+            PaymentRequest paymentRequest = new PaymentRequest()
+            {
+                Amount = new Amount(Currency.EUR, totalPrice),
+                Description = checkout.Show.InternalId,
+                RedirectUrl = "https://localhost:5001/",
+                WebhookUrl = "https://c88aab43.ngrok.io/checkout/test/"
+                //+ checkout.CheckoutCode
+            };
+            PaymentResponse paymentResponse = await paymentClient.CreatePaymentAsync(paymentRequest);
+            checkout.PaymentId = paymentResponse.Id;
+
+            //Store Tickets in db
+            //return paymentResponse;
+            return paymentResponse.Links.Checkout.Href;
+        }
     }
 }

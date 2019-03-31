@@ -5,10 +5,6 @@
 }
 
 <form asp-action="SaveSelectedSeats" asp-controller="Seat" method="POST">
-
-    <input type="hidden" asp-for="@Model.Checkout.ShowId" />
-
-
     <h1>SelectSeats</h1>
     <div class="container" style="width:800px">
         <div class="row movie-screen"></div>
@@ -18,12 +14,11 @@
                 <div class="col-auto" style="width:15px; margin-left: -15px;">@row.Key</div>
                 @foreach (var seat in row.Value)
                 {
-                    int i = 0;
 
                     int seatnr = seat.Key.SeatNumber;
                     SeatStatus isOccupied = seat.Key.Status;
                     string dataStatus;
-                    string seatId = string.Format("seat-{0}{1}", @seat.Key.RowLetter, @seatnr);
+                    string seatId = string.Format("{0}-{1}", @seat.Key.RowLetter, @seatnr);
 
                     if (isOccupied == SeatStatus.Free)
                     {
@@ -42,49 +37,28 @@
                     {
                         <div class="checkbox" style=@(seatnr == 6 || seatnr== 20 ? "margin-right:20px;" : "" )>
                             <input type="checkbox"
-                                   name=@seat.Value
-                                   value="true" id="@seatId"
-                                   data-status=@(dataStatus)>
+                                   name=@seatId
+                                   value="Geselecteerd" id="@seatId"
+                                   data-status=@(dataStatus) />
                             <label for="@seatId"></label>
                         </div>
                     }
                     else
                     {
                         <div class="checkbox" style=@(seatnr == 6 || seatnr== 20 ? "margin-right:20px;" : "" )>
-                            @Html.CheckBoxFor(s => seat.Value, htmlAttributes: new
-                               {
-                                    id = @seatId,
-                                    data_status = @dataStatus,
-                                    disabled = "disabled"
-                               })
+                            <input type="checkbox"
+                                   name=@seatId
+                                   value="Geselecteerd" id="@seatId"
+                                   data-status=@(dataStatus)
+                                   disabled />
                             <label for="@seatId"></label>
                         </div>
                     }
-                    @*<div class="checkbox" style=@(seatnr == 6 || seatnr== 20 ? "margin-right:20px;" : "" )>
-                            @*<input type="checkbox"
-                                   name="@seat.Value"
-                                   value="true" id="@seatId"
-                                   data-status=@(dataStatus)
-                                   @(disabled)>
-
-
-
-                            @Html.CheckBoxFor(s => seat.Value,
-                           htmlAttributes: new
-                           {
-                                id = @seatId,
-                                data_status = @dataStatus,
-                                @disabled
-                           })
-                            <label for="@seatId" ></label>
-                        </div>*@
-                    i++;
                 }
 
             </div>
         }
     </div>
-    <input type="hidden" name="Test" value="Test" />
     <input id="submitBtn" type="hidden" value="Verzenden" />
 </form>
 

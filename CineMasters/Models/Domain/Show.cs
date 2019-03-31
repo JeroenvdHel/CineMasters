@@ -1,5 +1,7 @@
-﻿using MongoDB.Bson;
+﻿using CineMasters.Models.Helpers;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,8 +12,8 @@ namespace CineMasters.Models.Domain
 {
     public class Show
     {
-        [BsonId]
-        public ObjectId InternalId { get; set; }
+        [BsonId(IdGenerator = typeof(CustomIdGenerator))]
+        public string InternalId { get; set; }
 
         public long Id { get; set; }
 

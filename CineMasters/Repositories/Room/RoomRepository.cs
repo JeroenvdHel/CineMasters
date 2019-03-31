@@ -76,6 +76,10 @@ namespace CineMasters.Repositories
         /// <returns>long</returns>
         public async Task<long> GetNextId()
         {
+            if (_context.Rooms.CountDocumentsAsync(new BsonDocument()).Result <= (long)0)
+            {
+                return await Task.FromResult(1);
+            }
             var list = _context.Rooms
                 .AsQueryable<Room>()
                 .OrderByDescending(s => s.Id);

@@ -25,5 +25,8 @@ namespace CineMasters.Config
 
         public IMongoCollection<Room> Rooms =>
             _mongoDb.GetCollection<Room>("rooms");
+
+        public IMongoCollection<Ticket> Tickets =>
+            _mongoDb.GetCollection<Ticket>("tickets");
     }
 }

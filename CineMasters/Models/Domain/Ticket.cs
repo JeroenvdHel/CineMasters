@@ -1,5 +1,7 @@
-﻿using MongoDB.Bson;
+﻿using CineMasters.Models.Helpers;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 using Nager.Date;
 using System;
 using System.Collections.Generic;
@@ -10,17 +12,19 @@ namespace CineMasters.Models.Domain
 {
     public class Ticket
     {
-        [BsonId]
-        public ObjectId InternalId { get; set; }
+        [BsonId(IdGenerator = typeof(CustomIdGenerator))]
+        public string InternalId { get; set; }
         public long Id { get; set; }
         public Show Show { get; set; }
+        public string Seat { get; set; }
         public bool IsChild { get; set; } = false;
         public bool IsStudent { get; set; } = false;
         public bool IsSenior { get; set; } = false;
         public bool IsVip { get; set; } = false;
         public decimal TicketPrice { get; set; }
-        public int TicketCode { get; set; }
+        public Int64 TicketCode { get; set; }
         public string PaymentId { get; set; }
+
 
         public Ticket(Show show)
         {

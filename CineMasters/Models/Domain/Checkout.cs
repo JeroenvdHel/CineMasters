@@ -19,6 +19,7 @@ namespace CineMasters.Models.Domain
         public int SeniorRate { get; set; }
         public int VipRate { get; set; }
         public decimal CouponDiscount { get; set; } = 0M;
+        public int CheckoutCode { get; set; }
         public string PaymentId { get; set; }
 
 

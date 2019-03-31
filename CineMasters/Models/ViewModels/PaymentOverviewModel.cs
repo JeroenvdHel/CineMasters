@@ -1,4 +1,5 @@
 ﻿using CineMasters.Models.Domain;
+using Mollie.Api.Models.Payment.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,14 +9,12 @@ namespace CineMasters.Models.ViewModels
 {
     public class PaymentOverviewModel
     {
-        public Show Show { get; set; }
-        public List<Seat> SelectedSeats { get; set; }
+        public Checkout Checkout { get; set; }
         public string Url { get; set; }
 
-        public PaymentOverviewModel(Show show, List<Seat> seats, string url)
+        public PaymentOverviewModel(Checkout checkout, string url)
         {
-            Show = show;
-            SelectedSeats = seats;
+            Checkout = checkout;
             Url = url;
         }
     }

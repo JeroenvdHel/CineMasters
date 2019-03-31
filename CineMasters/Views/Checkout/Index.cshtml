@@ -9,6 +9,7 @@
     <!-- use tag-helper for form-control -->
     <form asp-action="SelectSeats" asp-controller="Seat" method="POST">
         <input type="hidden" asp-for="@Model.ShowId" value="@Model.ShowId" />
+        <input type="hidden" asp-for="@Model.CheckoutCode" value="@Model.CheckoutCode" />
 
         <div class="row mt-5 mb-2 align-items-center">
             <h4>Selecteer je gewenst aantal tickets en korting.</h4>
