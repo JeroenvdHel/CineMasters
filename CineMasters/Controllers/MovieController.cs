@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CineMasters.Models.Domain;
 using CineMasters.Models.ViewModels;
 using CineMasters.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

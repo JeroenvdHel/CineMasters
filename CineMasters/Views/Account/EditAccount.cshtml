@@ -1,0 +1,35 @@
+﻿@model EditModel
+
+@{
+    ViewData["Title"] = "EditAccount";
+}
+
+<h1>Edit Account</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditAccount">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">Gebruikersnaam</label>
+                <input asp-for="Name" value="@Model.Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">E-mail</label>
+                <input asp-for="Email" value="@Model.Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Opslaan" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Annuleren</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" asp-controller="Home">Back to List</a>
+</div>

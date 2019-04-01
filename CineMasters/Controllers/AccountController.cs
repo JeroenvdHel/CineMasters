@@ -58,5 +58,72 @@ namespace CineMasters.Controllers
             await SignInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult CreateAccount()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> CreateAccount(CreateModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                AppUser user = new AppUser
+                {
+                    UserName = model.Name,
+                    Email = model.Email
+                };
+                IdentityResult result =
+                    await UserManager.CreateAsync(user, model.Password);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("AllAccounts", "Admin");
+                }
+                else
+                {
+                    foreach (IdentityError error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
+            }
+            return View(model);
+        }
+
+        public async Task<IActionResult> EditAccount(string id)
+        {
+            AppUser user = await UserManager.FindByIdAsync(id);
+            EditModel model = new EditModel
+            {
+                Id = user.Id,
+                Name = user.UserName,
+                Email = user.Email
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditAccount(EditModel model)
+        {
+            AppUser user = await UserManager.FindByIdAsync(model.Id);
+            if (user != null)
+            {
+                user.UserName = model.Name;
+                user.Email = model.Email;
+                await UserManager.UpdateAsync(user);
+
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return View();
+            }
+        }
     }
 }

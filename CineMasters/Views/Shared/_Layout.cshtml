@@ -57,12 +57,36 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Checkout" asp-action="Index">Checkout</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Log uit</a>
-                        </li>
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="CreateAccount">Maak account</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark font-weight-bold" href="#" id="navbardrop" data-toggle="dropdown">@(User.Identity.Name)</a>
+                                <div class="dropdown-menu">
+                                    @if (User.IsInRole("Administrator"))
+                                    {
+                                        <a class="dropdown-item text-dark" asp-action="AllAccounts" asp-controller="Admin">
+                                            Admin Panel
+                                        </a>
+                                    }
+                                    <a class="dropdown-item text-dark" asp-action="Logout" asp-controller="Account">
+                                        Log uit
+                                    </a>
+                                </div>
+
+
+                            </li>
+                        }
+
+
                     </ul>
                 </div>
             </div>

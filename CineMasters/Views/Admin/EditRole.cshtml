@@ -1,0 +1,56 @@
+﻿@model RoleEditModel
+
+@{
+    ViewData["Title"] = "EditRole";
+}
+
+<div class="bg-primary m-1 p-1 text-white"><h4>Wijzig Rol</h4></div>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="EditRole" method="post">
+    <input type="hidden" name="roleName" value="@Model.Role.Name" />
+    <input type="hidden" name="roleId" value="@Model.Role.Id" />
+
+    <h6 class="bg-info p-1 text-white">Toevoegen aan rol '@Model.Role.Name'</h6>
+    <table class="table table-bordered table-sm">
+        @if (Model.NonMembers.Count() == 0)
+        {
+            <tr><td colspan="2">Alle gebruikers zijn al lid</td></tr>
+        }
+        else
+        {
+            @foreach (AppUser user in Model.NonMembers)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>
+                        <input type="checkbox" name="IdsToAdd" value="@user.Id">
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+
+    <h6 class="bg-info p-1 text-white">Verwijderen van rol '@Model.Role.Name'</h6>
+    <table class="table table-bordered table-sm">
+        @if (Model.Members.Count() == 0)
+        {
+            <tr><td colspan="2">Deze rol heeft geen leden</td></tr>
+        }
+        else
+        {
+            @foreach (AppUser user in Model.Members)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>
+                        <input type="checkbox" name="IdsToDelete" value="@user.Id">
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+    <input type="submit" class="btn btn-primary" value="Opslaan" />
+    <a asp-action="AllRoles">Annuleren</a>
+</form>

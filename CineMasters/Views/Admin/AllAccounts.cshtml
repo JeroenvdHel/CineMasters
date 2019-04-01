@@ -1,0 +1,41 @@
+﻿@model IEnumerable<AppUser>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="bg-primary m-1 p-1 text-white"><h4>Gebruikersaccounts</h4></div>
+
+<table class="table table-sm table-bordered">
+    <tr>
+        <th>ID</th>
+        <th>Naam</th>
+        <th>E-mail</th>
+        <th></th>
+    </tr>
+    @if (Model.Count() == 0)
+    {
+        <tr><td colspan="3" class="text-center">Geen gebruikersaccounts</td></tr>
+    }
+    else
+    {
+        @foreach (AppUser user in Model)
+        {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.UserName</td>
+            <td>@user.Email</td>
+            <td>
+                <form asp-action="DeleteAccount" asp-route-id="@user.Id" method="post">
+                    <a class="btn btn-sm btn-primary" href="@Url.Action("EditAccount", "Account", new { id = user.Id} )">Wijzigen</a>
+                    @*@Html.ActionLink("Wijzigen", "EditAccount", "Account", new { id = user.Id })*@
+                    <input type="submit" value="Verwijderen" class="btn btn-sm btn-danger" />
+                </form>
+            </td>
+        </tr>
+        }
+    }
+</table>
+
+<a class="btn btn-primary" asp-action="CreateAccount" asp-controller="Account">Create</a>
+

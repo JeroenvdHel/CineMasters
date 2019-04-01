@@ -67,9 +67,15 @@ namespace CineMasters
                 b.MigrationsAssembly("CineMasters"));
             });
 
-            services.AddIdentity<AppUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppIdentityDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentity<AppUser, IdentityRole>(options => {
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+            }).AddEntityFrameworkStores<AppIdentityDbContext>()
+              .AddDefaultTokenProviders();
 
             //services.ConfigureApplicationCookie(options =>
             //    options.LoginPath = "/User/Login");
