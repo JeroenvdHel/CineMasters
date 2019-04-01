@@ -1,4 +1,4 @@
-﻿using CineMasters.Models.Domain;
+﻿using CineMasters.Areas.Shows.Models;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;

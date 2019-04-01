@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CineMasters.Models.Domain;
+using CineMasters.Areas.Shows.Models;
 using MongoDB.Driver;
 
 namespace CineMasters.Config

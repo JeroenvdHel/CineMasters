@@ -1,4 +1,4 @@
-﻿using CineMasters.Accounts;
+﻿using CineMasters.Areas.Accounts.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
