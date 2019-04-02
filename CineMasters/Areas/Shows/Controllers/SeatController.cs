@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 
 namespace CineMasters.Controllers
 {
+    [Area("Shows")]
     public class SeatController : Controller
     {
         private readonly IShowRepository _showRepo;

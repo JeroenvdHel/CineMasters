@@ -54,7 +54,13 @@ namespace CineMasters
                 options.Cookie.IsEssential = true;
             });
 
-            services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute())).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute())).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddMvc(options => {
+                options.EnableEndpointRouting = false;
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
 
             var config = new ServerConfig();
             Configuration.Bind(config);
@@ -149,7 +155,7 @@ namespace CineMasters
 
                 routes.MapAreaRoute(
                     name: "AccountArea",
-                    areaName: "AccountArea",
+                    areaName: "Account",
                     template: "Account/{controller}/{action}/{id?}",
                     defaults: new { controller = "Account", action = "CreateAccount" });
 

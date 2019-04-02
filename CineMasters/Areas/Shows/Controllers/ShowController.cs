@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CineMasters.Areas.Shows.Controllers
 {
+    [Area("Shows")]
     public class ShowController : Controller
     {
         private readonly IShowRepository _showRepo;

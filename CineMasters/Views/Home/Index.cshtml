@@ -5,9 +5,7 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <a href="@Url.Action("Index", "Movie")">Alle films</a>
-    <a href="@Url.Action("Index", "Show")">Alle voorstellingen</a>
+    <a href="@Url.Action("Index", "Movie", new { Area = "Shows" })">Alle films</a>
+    <a href="@Url.Action("Index", "Show", new { area = "Shows"})">Alle voorstellingen</a>
     <a asp-action="Index" asp-controller="Admin">Gebruikers</a>
 </div>
-
-

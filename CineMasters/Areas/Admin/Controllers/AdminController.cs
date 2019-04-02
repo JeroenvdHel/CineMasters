@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CineMasters.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     [Authorize(Roles = "Administrator")]
     public class AdminController : Controller
     {

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CineMasters.Areas.Shows.Controllers
 {
+    [Area("Shows")]
     public class RoomController : Controller
     {
         private readonly IRoomRepository _roomRepo;

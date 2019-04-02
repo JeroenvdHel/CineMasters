@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CineMasters.Areas.Shows.Controllers
 {
+    [Area("Shows")]
     public class MovieController : Controller
     {
         private readonly IMovieRepository _movieRepo;

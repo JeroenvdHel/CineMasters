@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace CineMasters.Areas.Accounts.Controllers
 {
+    [Area("Accounts")]
     [Authorize]
     public class AccountController : Controller
     {
