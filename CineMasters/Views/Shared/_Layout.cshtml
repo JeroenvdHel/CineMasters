@@ -74,10 +74,17 @@
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-dark font-weight-bold" href="#" id="navbardrop" data-toggle="dropdown">@(User.Identity.Name)</a>
                                 <div class="dropdown-menu">
-                                    @if (User.IsInRole("Administrator"))
+
+                                    @if (User.IsInRole("Kassamedewerker") || User.IsInRole("Administrator"))
                                     {
-                                        <a class="dropdown-item text-dark" asp-area="Admin" asp-action="Index" asp-controller="Home">
-                                            Admin Panel
+                                        @if (User.IsInRole("Administrator"))
+                                        {
+                                            <a class="dropdown-item text-dark" asp-area="Admin" asp-action="Index" asp-controller="Home">
+                                                Admin Panel
+                                            </a>
+                                        }
+                                        <a class="dropdown-item text-dark" asp-area="Register" asp-action="Index" asp-controller="Home">
+                                            Kassa
                                         </a>
                                     }
                                     <a class="dropdown-item text-dark" asp-area="Accounts" asp-action="Logout" asp-controller="Account">

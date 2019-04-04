@@ -97,16 +97,16 @@
                     <option value="5">5</option>
                 </select>
             </div>
-            <div class="col-md-6 col-12">
-                <p>
-                    Nationale bioscoopbon t.w.v.<br>
-                    <a class="text-muted"><small>Nationale bioscoopbon</small></a>
-                </p>
-            </div>
             @if (User.Identity.IsAuthenticated)
             {
                 if (User.IsInRole("Kassamedewerker") || User.IsInRole("Administrator"))
                 {
+                    <div class="col-md-6 col-12">
+                        <p>
+                            Ingewisselde bonnen t.w.v.<br>
+                            <a class="text-muted"><small>Nationale bioscoopbon / MaDiWoDo-bon</small></a>
+                        </p>
+                    </div>
                     <div class="col-md-1 col-4">
                         <input asp-for="CouponDiscount" class="form-control" />
                         <span asp-validation-for="CouponDiscount" class="text-danger"></span>

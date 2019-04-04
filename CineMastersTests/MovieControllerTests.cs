@@ -2,11 +2,13 @@
 using CineMasters.Areas.Shows.Models;
 using CineMasters.Repositories;
 using CineMastersTests.Data;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace CineMastersTests
@@ -18,6 +20,7 @@ namespace CineMastersTests
         public void CanCreateMovie(Movie[] movies)
         {
             // Arrange
+            Movie movie = new Movie { Title = "TestMovie" };
             var movieRepoMock = new Mock<IMovieRepository>();
             movieRepoMock
                 .Setup(m => m.Create(It.IsAny<Movie>()))
@@ -25,15 +28,14 @@ namespace CineMastersTests
 
             //not used
             var showRepoMock = new Mock<IShowRepository>();
-            var movie = new Movie { Id = 6, Title = "TestMovie" };
+
             var controller = new MovieController(movieRepoMock.Object, showRepoMock.Object);
 
             // Act
-            //var result = controller.CreateMovie(movie);
-
+            var result = controller.CreateMovie(movie);
 
             // Assert
-
+            Assert.NotNull(result);
         }
     }
 }

@@ -78,6 +78,8 @@ namespace CineMasters
                 options.UseSqlServer(Configuration.GetSection("UserIdentity:ConnectionString").Value, b =>
                 b.MigrationsAssembly("CineMasters"));
             });
+            
+
             services.AddIdentity<AppUser, IdentityRole>(options => {
                 options.User.RequireUniqueEmail = true;
                 options.Password.RequiredLength = 6;
@@ -182,7 +184,7 @@ namespace CineMasters
                     defaults: new { controller = "Home", action = "Index" });
             });
 
-            IdentitySeedData.EnsurePopulated(app);
+
         }
     }
 }

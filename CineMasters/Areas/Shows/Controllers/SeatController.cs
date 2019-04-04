@@ -89,7 +89,7 @@ namespace CineMasters.Controllers
 
             bool seatsReservedInDb = SaveSeats(checkout);
 
-            //bool paymentResult = PaymentSucceeded(true);
+            bool paymentResult = PaymentSucceeded(true);
 
             string paymentResponse = MakePayment(checkout).Result;
             //Store Tickets in db
@@ -158,7 +158,8 @@ namespace CineMasters.Controllers
 
         public async Task<string> MakePayment(Checkout checkout)
         {
-            string totalPrice = checkout.GetTotalPrice().ToString();
+            decimal totPrice = decimal.Round(checkout.GetTotalPrice(), 2, MidpointRounding.AwayFromZero);
+            string totalPrice = totPrice.ToString();
 
             IPaymentClient paymentClient = new PaymentClient("test_spzpNiFENpG6uUWDMnuJxvJwwsh2M8");
 
