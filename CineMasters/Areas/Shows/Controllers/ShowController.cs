@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Cinemasters.Models.Helpers;
+using Cinemasters.Helpers;
 using CineMasters.Areas.Shows.Models;
 using CineMasters.Areas.Shows.Models.ViewModels;
 using CineMasters.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,7 +19,7 @@ namespace CineMasters.Areas.Shows.Controllers
         private readonly IShowRepository _showRepo;
         private readonly IMovieRepository _movieRepo;
         private readonly IRoomRepository _roomRepo;
-        public int PageSize = 5;
+        public int PageSize = 10;
         public string SortedBy { get; set; } = "date";
 
         public ShowController(IShowRepository showRepo, IMovieRepository movieRepo, IRoomRepository roomRepo)
@@ -32,6 +33,25 @@ namespace CineMasters.Areas.Shows.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int showPage = 1, string sortedBy = "default", string filter = "none")
         {
+            if (SortedBy != sortedBy && sortedBy != "default")
+            {
+                SortedBy = sortedBy;
+            }
+            ViewBag.sortedBy = SortedBy;
+
+            var shows = await _showRepo.GetAllShows();
+            var showList = SortShows(CreateShowListViewModel(shows, showPage, sortedBy), sortedBy);
+            showList.Shows = showList.Shows.Skip((showPage - 1) * PageSize).Take(PageSize);
+
+
+            return View("AllShows", showList);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetShowsByFilter(int showPage = 1, string sortedBy = "date", string filter = "")
+        {
+            var movies = _movieRepo.GetAllMovies(filter).Result;
+
             if (SortedBy != sortedBy && sortedBy != "default")
             {
                 SortedBy = sortedBy;
@@ -60,6 +80,7 @@ namespace CineMasters.Areas.Shows.Controllers
         }
 
         //Get show create form
+        [Authorize(Roles = "Administrator, Back-office medewerker")]
         [HttpGet]
         public IActionResult CreateShow()
         {
@@ -70,6 +91,7 @@ namespace CineMasters.Areas.Shows.Controllers
         }
 
         //Store posted new show in database
+        [Authorize(Roles = "Administrator, Back-office medewerker")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateShow([FromForm] Show show)
@@ -79,6 +101,7 @@ namespace CineMasters.Areas.Shows.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "Administrator, Back-office medewerker")]
         [HttpGet]
         public IActionResult EditShow(long id)
         {
@@ -89,6 +112,7 @@ namespace CineMasters.Areas.Shows.Controllers
         }
 
         //Store edited show in database
+        [Authorize(Roles = "Administrator, Back-office medewerker")]
         [HttpPost]
         public async Task<ActionResult<Show>> PutShow([FromForm] Show show)
         {
@@ -113,6 +137,7 @@ namespace CineMasters.Areas.Shows.Controllers
         }
 
         //Delete sected show from database
+        [Authorize(Roles = "Administrator")]
         [HttpGet]
         public async Task<IActionResult> DeleteShow(long id)
         {
@@ -182,6 +207,7 @@ namespace CineMasters.Areas.Shows.Controllers
                     showList.Shows = showList.Shows.OrderBy(o => o.DateTime);
                     break;
                 default:
+                    showList.Shows = showList.Shows.OrderBy(o => o.DateTime);
                     break;
             }
             return showList;

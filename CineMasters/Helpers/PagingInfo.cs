@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Cinemasters.Models.Helpers
+namespace Cinemasters.Helpers
 {
     public class PagingInfo
     {

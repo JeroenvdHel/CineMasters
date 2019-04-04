@@ -7,7 +7,10 @@
 <h1>Voorstellingen overzicht</h1>
 
 <p>
-    <a asp-action="CreateShow">Create New</a>
+    @if (User.IsInRole("Administrator") || User.IsInRole("Back-office medewerker"))
+    {
+        <a asp-action="CreateShow">Maak een nieuwe voorstelling</a>
+    }
 </p>
 <div class="container">
     <div class="row">
@@ -57,80 +60,54 @@
     <tbody>
         @foreach (var show in Model.Shows)
         {
-            <tr>
-                <td>
-                    <a href="@Url.Action("GetMovieForDetails", "Movie", new { id = show.Movie.Id })">
-                        <img src="~/img/movie_pics/@(show.Movie.InternalId)_small.jpg" height="150" />
-                    </a>
+        <tr>
+            <td>
+                <a href="@Url.Action("GetMovieForDetails", "Movie", new { id = show.Movie.Id })">
+                    <img src="~/img/movie_pics/@(show.Movie.Id)_@(show.Movie.Title).jpg" height="150" width="95" />
+                </a>
 
-                </td>
-                <td>
-                    <a href="@Url.Action("GetMovieForDetails", "Movie", new { id = show.Movie.Id })">
-                        <b>@show.Movie.Title</b>
-                    </a>
-                </td>
-                <td>
-                    @show.DateTime.ToString("dd MMMM yyyy")
-                </td>
-                <td>
-                    @show.DateTime.ToString("HH:mm")
-                </td>
-                <td>
-                    @show.Room.Name
-                </td>
-                <td>
-                    @(show.ThreeDimensional ? "Ja" : "Nee")
-                </td>
-                <td>
-                    @Html.ActionLink("Koop ticket", "Index", "Checkout", new { @showId = show.Id })
-                </td>
-            </tr>
+            </td>
+            <td>
+                <a href="@Url.Action("GetMovieForDetails", "Movie", new { id = show.Movie.Id })">
+                    <b>@show.Movie.Title</b>
+                </a>
+            </td>
+            <td>
+                @show.DateTime.ToString("dd MMMM yyyy")
+            </td>
+            <td>
+                @show.DateTime.ToString("HH:mm")
+            </td>
+            <td>
+                @show.Room.Name
+            </td>
+            <td>
+                @(show.ThreeDimensional ? "Ja" : "Nee")
+            </td>
+            <td>
+                @Html.ActionLink("Koop ticket", "Index", "Checkout", new { @showId = show.Id })
+            </td>
+            @if (User.Identity.IsAuthenticated  )
+            {
+                @if (User.IsInRole("Back-office medewerker"))
+                {
+                    <td>
+                        @Html.ActionLink("Edit", "EditShow", new { id = show.Id })
+                    </td>
+                }
+                else if (User.IsInRole("Administrator"))
+                {
+                    <td>
+                        @Html.ActionLink("Edit", "EditShow", new { id = show.Id }) 
+                        |
+                        @Html.ActionLink("Delete", "DeleteShow", new { id = show.Id })
+                    </td>
+                }
+            }
+
+        </tr>
         }
     </tbody>
 </table>
 <div page-model="@Model.PagingInfo" page-action="Index"></div>
 
-@*<p>
-    <a asp-action="CreateShow">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                Datum/tijd
-            </th>
-            <th>
-                Titel
-            </th>
-            <th>
-                Zaal
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Movie.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Room.Name)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "EditShow", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "DeleteShow", new { id = item.Id })
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>*@

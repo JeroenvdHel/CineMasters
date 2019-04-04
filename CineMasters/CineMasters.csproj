@@ -27,6 +27,8 @@
     <Folder Include="Accounts\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Register\Data\" />
+    <Folder Include="Areas\Register\Models\" />
     <Folder Include="dev\" />
     <Folder Include="Models\Domain\" />
     <Folder Include="Models\ViewModels\" />

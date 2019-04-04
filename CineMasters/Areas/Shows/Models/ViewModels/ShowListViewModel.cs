@@ -1,4 +1,4 @@
-﻿using Cinemasters.Models.Helpers;
+﻿using Cinemasters.Helpers;
 using CineMasters.Areas.Shows.Models;
 using System;
 using System.Collections.Generic;

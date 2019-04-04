@@ -13,7 +13,8 @@ namespace CineMasters.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Show", new { area = "Shows" });
+            //return View();
         }
 
         public IActionResult Privacy()

@@ -87,7 +87,7 @@ namespace CineMasters.Controllers
             checkout.SelectedSeats = selectedSeats;
             HttpContext.Session.SetObjectAsJson("checkout", checkout);
 
-            //bool seatsReservedInDb = SaveSeats(checkout);
+            bool seatsReservedInDb = SaveSeats(checkout);
 
             //bool paymentResult = PaymentSucceeded(true);
 
@@ -95,6 +95,9 @@ namespace CineMasters.Controllers
             //Store Tickets in db
 
             PaymentOverviewModel model = new PaymentOverviewModel(checkout, paymentResponse);
+            checkout.SelectedSeats = ChangeSeatStatus(checkout.SelectedSeats, SeatStatus.Occupied);
+            bool seatsOccupiedInDb = SaveSeats(checkout);
+
 
             return View("PaymentOverview", model);
         }

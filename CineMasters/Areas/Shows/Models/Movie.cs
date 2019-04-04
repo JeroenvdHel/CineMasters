@@ -1,4 +1,5 @@
 ﻿using CineMasters.Models.Helpers;
+using Microsoft.AspNetCore.Http;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
@@ -27,6 +28,7 @@ namespace CineMasters.Areas.Shows.Models
         public string[] Actors { get; set; } = new string[] { };
         public Genre[] Genre { get; set; } = new Genre[] { };
         public string Description { get; set; }
+        //public BsonBinaryData[] Image { get; set; }
     }
 
     public enum Language

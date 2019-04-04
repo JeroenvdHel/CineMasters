@@ -7,7 +7,11 @@
 <h1>AllMovies</h1>
 
 <p>
-    <a asp-action="CreateMovie">Create New</a>
+    @if (User.IsInRole("Administrator") || User.IsInRole("Back-office medewerker"))
+    {
+    <a asp-action="CreateMovie">Maak een nieuwe film</a>
+    }
+    
 </p>
 <table class="table">
     <thead>

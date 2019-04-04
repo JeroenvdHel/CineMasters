@@ -103,10 +103,16 @@
                     <a class="text-muted"><small>Nationale bioscoopbon</small></a>
                 </p>
             </div>
-            <div class="col-md-1 col-4">
-                <input asp-for="CouponDiscount" class="form-control" />
-                <span asp-validation-for="CouponDiscount" class="text-danger"></span>
-            </div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Kassamedewerker") || User.IsInRole("Administrator"))
+                {
+                    <div class="col-md-1 col-4">
+                        <input asp-for="CouponDiscount" class="form-control" />
+                        <span asp-validation-for="CouponDiscount" class="text-danger"></span>
+                    </div>
+                }
+            }
         </div>
 
         <div class="row mt-3 mb-2">

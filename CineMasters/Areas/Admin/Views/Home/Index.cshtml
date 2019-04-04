@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<h1 class="text-center">Admin Panel</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <a href="@Url.Action("CreateMovie", "Movie", new { area = "Shows" })" class="tile green">
+                <h3 class="title">Film toevoegen</h3>
+                <p>Voeg een nieuwe film toe</p>
+            </a>
+        </div>
+        <div class="col">
+            <a href="@Url.Action("CreateShow", "Show", new { area = "Shows" })" class="tile blue">
+                <h3 class="title">Voorstelling toevoegen</h3>
+                <p>Voeg een nieuwe</p>
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a href="@Url.Action("EditMovie", "Movie", new { area = "Shows" })" class="tile purple">
+                <h3 class="title">Film wijzigen</h3>
+                <p>Wijzig filminformatie</p>
+            </a>
+        </div>
+        <div class="col">
+            <a href="@Url.Action("EditShow", "Show", new { area = "Shows" })" class="tile orange">
+                <h3 class="title">Voorstelling wijzigen</h3>
+                <p>Wijzig voorstelling</p>
+            </a>
+        </div>
+    </div>
+    @if (User.IsInRole("Administrator"))
+    {
+        <div class="row">
+            <div class="col">
+                <a href="@Url.Action("AllRoles", "Admin", new { area = "Admin" })" class="tile yellow">
+                    <h3 class="title">Rechten</h3>
+                    <p>Beheer gebruikersrechten</p>
+                </a>
+            </div>
+            <div class="col">
+                <a href="@Url.Action("AllAccounts", "Admin", new { area = "Admin" })" class="tile red">
+                    <h3 class="title">Accounts</h3>
+                    <p>Beheer accounts</p>
+                </a>
+            </div>
+        </div>
+    }
+
+</div>

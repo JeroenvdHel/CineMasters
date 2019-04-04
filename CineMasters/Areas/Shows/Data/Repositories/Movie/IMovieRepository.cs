@@ -9,13 +9,13 @@ namespace CineMasters.Repositories
     public interface IMovieRepository
     {
         // api/[GET]
-        Task<IEnumerable<Movie>> GetAllMovies();
+        Task<IEnumerable<Movie>> GetAllMovies(string filter = null);
         
         // api/1/[GET]
         Task<Movie> GetMovie(long id);
         
         // api/[POST]
-        Task Create(Movie movie);
+        bool Create(Movie movie);
         
         // api/[PUT]
         Task<bool> Update(Movie movie);

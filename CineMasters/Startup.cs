@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using CineMasters.Areas.Accounts.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace CineMasters
 {
@@ -56,10 +57,15 @@ namespace CineMasters
 
             //services.AddMvc(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute())).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddMvc(options => {
+            services.AddMvc(options =>
+            {
                 options.EnableEndpointRouting = false;
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //.AddRazorPagesOptions(options => 
+            //{
+            //    options
+            //});
 
 
             var config = new ServerConfig();
@@ -72,7 +78,6 @@ namespace CineMasters
                 options.UseSqlServer(Configuration.GetSection("UserIdentity:ConnectionString").Value, b =>
                 b.MigrationsAssembly("CineMasters"));
             });
-
             services.AddIdentity<AppUser, IdentityRole>(options => {
                 options.User.RequireUniqueEmail = true;
                 options.Password.RequiredLength = 6;
@@ -155,15 +160,21 @@ namespace CineMasters
 
                 routes.MapAreaRoute(
                     name: "AccountArea",
-                    areaName: "Account",
-                    template: "Account/{controller}/{action}/{id?}",
+                    areaName: "Accounts",
+                    template: "Accounts/{controller}/{action}/{id?}",
                     defaults: new { controller = "Account", action = "CreateAccount" });
 
                 routes.MapAreaRoute(
                     name: "AdminArea",
                     areaName: "Admin",
                     template: "Admin/{controller}/{action}/{id?}",
-                    defaults: new { controller = "Admin", action = "AllAccounts" });
+                    defaults: new { controller = "Home", action = "Index" });
+
+                routes.MapAreaRoute(
+                    name: "RegisterArea",
+                    areaName: "Register",
+                    template: "Register/{controller}/{action}/{id?}",
+                    defaults: new { controller = "Home", action = "Index" });
 
                 routes.MapRoute(
                     name: "default",
@@ -171,7 +182,7 @@ namespace CineMasters
                     defaults: new { controller = "Home", action = "Index" });
             });
 
-            //IdentitySeedData.EnsurePopulated(app);
+            IdentitySeedData.EnsurePopulated(app);
         }
     }
 }

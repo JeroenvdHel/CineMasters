@@ -15,6 +15,7 @@ using Mollie.Api.Models.Payment.Response;
 
 namespace CineMasters.Controllers
 {
+    [Area("Shows")]
     public class CheckoutController : Controller
     {
         private readonly ITicketRepository _ticketRepo;

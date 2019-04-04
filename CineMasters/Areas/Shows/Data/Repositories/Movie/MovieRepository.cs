@@ -19,11 +19,18 @@ namespace CineMasters.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Movie>> GetAllMovies()
+        public async Task<IEnumerable<Movie>> GetAllMovies(string filter = null)
         {
+            if (string.IsNullOrWhiteSpace(filter))
+            {
+                return await _context
+                    .Movies
+                    .Find(_ => true)
+                    .ToListAsync();
+            }
             return await _context
                 .Movies
-                .Find(_ => true)
+                .Find(Builders<Movie>.Filter.Text(filter))
                 .ToListAsync();
         }
 
@@ -37,9 +44,11 @@ namespace CineMasters.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task Create(Movie movie)
+        public bool Create(Movie movie)
         {
-            await _context.Movies.InsertOneAsync(movie);
+            Task create = _context.Movies.InsertOneAsync(movie);
+            create.Wait();
+            return create.IsCompletedSuccessfully;
         }
 
         public async Task<bool> Update(Movie movie)

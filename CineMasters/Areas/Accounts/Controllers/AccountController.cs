@@ -58,7 +58,7 @@ namespace CineMasters.Areas.Accounts.Controllers
         [HttpGet]
         public async Task<IActionResult> Logout() {
             await SignInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
 
         [HttpGet]

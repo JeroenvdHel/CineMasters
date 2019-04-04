@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using CineMasters.Areas.Shows.Models;
@@ -74,6 +75,7 @@ namespace CineMasters.Areas.Shows.Controllers
             return View("MovieDetails", viewModel);
         }
 
+        [Authorize(Roles = "Administrator, Back-office medewerker")]
         //GET movie/create
         [HttpGet]
         public IActionResult CreateMovie()
@@ -83,15 +85,44 @@ namespace CineMasters.Areas.Shows.Controllers
         }
 
         //POST movie
+        [Authorize(Roles = "Administrator, Back-office medewerker")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateMovie([FromForm] Movie movie)
         {
             movie.Id = await _movieRepo.GetNextId();
-            await _movieRepo.Create(movie);
-            return RedirectToAction("Index");
+            bool result = _movieRepo.Create(movie);
+
+            ///Image part
+            if (result)
+            {
+                var images = HttpContext.Request.Form.Files;
+
+                long size = images.Sum(f => f.Length);
+
+                foreach (var img in images)
+                {
+                    string fileName = movie.Id + "_" + movie.Title;
+                    string fileExt = img.FileName.Substring(img.FileName.Length - 4);
+                    string path = "dev/img/movie_pics/{0}{1}";
+                    var filePath = String.Format(path, fileName, fileExt);
+
+                    if (img.Length > 0)
+                    {
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await img.CopyToAsync(stream);
+                        }
+
+                    }
+                }
+
+                return RedirectToAction("Index");
+            }
+            return BadRequest("Er ging iets mis");
         }
 
+        [Authorize(Roles = "Administrator, Back-office medewerker")]
         [HttpGet]
         public IActionResult EditMovie(long id)
         {
@@ -99,6 +130,8 @@ namespace CineMasters.Areas.Shows.Controllers
             return View("EditMovie", movie);
         }
 
+
+        [Authorize(Roles = "Administrator, Back-office medewerker")]
         //PUT movie/1
         [HttpPost]
         public async Task<ActionResult<Movie>> PutMovie([FromForm] Movie movie)
@@ -115,10 +148,33 @@ namespace CineMasters.Areas.Shows.Controllers
 
             await _movieRepo.Update(movie);
 
+            ///Image part
+            var images = HttpContext.Request.Form.Files;
+
+            long size = images.Sum(f => f.Length);
+
+            foreach (var img in images)
+            {
+                string fileName = movie.Id + "_" + movie.Title;
+                string fileExt = img.FileName.Substring(img.FileName.Length - 4);
+                string path = "dev/img/movie_pics/{0}{1}";
+                var filePath = String.Format(path, fileName, fileExt);
+
+                if (img.Length > 0)
+                {
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await img.CopyToAsync(stream);
+                    }
+
+                }
+            }
+
             return RedirectToAction("Index"); 
         }
 
         //DELETE movie/1
+        [Authorize(Roles = "Administrator")]
         [HttpGet]
         public async Task<IActionResult> DeleteMovie( long id)
         {
